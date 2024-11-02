@@ -1,0 +1,11 @@
+pre-push:
+  parallel: true
+  commands:
+    format:
+      run: |
+        pnpm run check:biome
+        if ! git diff --exit-code; then
+          git add .
+          git commit -m 'format code by biome'
+        fi
+      stage_fixed: true
