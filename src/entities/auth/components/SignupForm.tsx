@@ -1,5 +1,3 @@
 export default function SignupForm() {
-  return (
-    <div>SignupForm</div>
-  )
+	return <div>SignupForm</div>;
 }

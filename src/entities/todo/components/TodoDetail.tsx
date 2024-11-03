@@ -1,5 +1,3 @@
 export default function TodoDetail() {
-  return (
-    <div>TodoDetail</div>
-  )
+	return <div>TodoDetail</div>;
 }
