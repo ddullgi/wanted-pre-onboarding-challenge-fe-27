@@ -1,7 +1,13 @@
-import { cn } from "../shared/utils/cn";
+import { RouterProvider } from "react-router-dom";
+import { AppProvider } from "./providers/apiClient";
+import { router } from "./routers/router";
 
 function App() {
-	return <div className={cn("text-3xl font-bold underline")}>Hello world!</div>;
+	return (
+		<AppProvider>
+			<RouterProvider router={router} />
+		</AppProvider>
+	);
 }
 
 export default App;
