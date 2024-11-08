@@ -1,20 +1,17 @@
-import Axios from "axios";
+import axios from "axios";
 
-export const axios = Axios.create({
-	baseURL: "http//:localhost:3000",
-	withCredentials: true,
+export const axiosInstance = axios.create({
+	baseURL: process.env.API_URL,
 	headers: {
 		"Content-Type": "application/json",
-		// 임시
-		Authorization: "",
 	},
+	timeout: 5000,
 });
 
-axios.interceptors.response.use(
-	(response) => {
-		return response.data;
-	},
-	(error) => {
-		return Promise.reject(error);
-	},
-);
+axiosInstance.interceptors.request.use((config) => {
+	const token = localStorage.getItem("token");
+	if (token) {
+		config.headers.Authorization = token;
+	}
+	return config;
+});
