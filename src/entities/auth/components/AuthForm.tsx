@@ -1,6 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+import { Button } from "@/shared/components/Button";
+import { Input } from "@/shared/components/Input";
+import { cn } from "@/shared/utils/cn";
 import type { AuthParams } from "../model/auth";
 import { AuthSchema } from "../schema/authSchema";
 
@@ -23,10 +26,12 @@ export default function AuthForm() {
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} noValidate>
-			<div>
-				<label htmlFor="email">Email</label>
-				<input
+		<form onSubmit={handleSubmit(onSubmit)} noValidate className={cn("w-80")}>
+			<div className={cn("w-full h-24")}>
+				<label htmlFor="email" className={cn("font-bold")}>
+					Email
+				</label>
+				<Input
 					id="email"
 					type="email"
 					{...register("email")}
@@ -35,9 +40,11 @@ export default function AuthForm() {
 				{errors.email && <p>{errors.email.message}</p>}
 			</div>
 
-			<div>
-				<label htmlFor="password">Password</label>
-				<input
+			<div className={cn("w-full h-24")}>
+				<label htmlFor="password" className={cn("font-bold")}>
+					Password
+				</label>
+				<Input
 					id="password"
 					type="password"
 					{...register("password")}
@@ -47,9 +54,9 @@ export default function AuthForm() {
 			</div>
 
 			{/* 제출 버튼은 유효성 검사 후 활성화 */}
-			<button type="submit" disabled={!isValid}>
+			<Button type="submit" disabled={!isValid}>
 				Login
-			</button>
+			</Button>
 		</form>
 	);
 }
