@@ -8,13 +8,13 @@ export default function Layout() {
 	const token = localStorage.getItem("token");
 	const setToken = useAuthStore((state) => state.setToken);
 
-	useEffect(() => {
-		if (token) {
-			setToken(token);
-		} else {
-			navigate("/login");
-		}
-	}, [setToken, token, navigate]);
+	// useEffect(() => {
+	// 	if (token) {
+	// 		setToken(token);
+	// 	} else {
+	// 		navigate("/login");
+	// 	}
+	// }, [setToken, token, navigate]);
 
 	return (
 		<main className={cn("w-full h-full flex flex-col items-center")}>
