@@ -1,11 +1,5 @@
-// import { Link } from "react-router-dom";
-// import Button from "../../shared/components/Button";
-import { cn } from "../../shared/utils/cn";
+import AuthForm from "@/entities/auth/components/AuthForm";
 
 export default function LoginPage() {
-	return (
-		<div>
-			<h1 className={cn("text-3xl")}>로그인 페이지</h1>
-		</div>
-	);
+	return <AuthForm formType="login" />;
 }

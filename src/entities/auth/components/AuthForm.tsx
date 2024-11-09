@@ -1,19 +1,27 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/shared/components/Button";
-import { Input } from "@/shared/components/Input";
+import { Button, Input } from "@/shared/components";
 import { cn } from "@/shared/utils/cn";
+import { useMutation } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { authQuery } from "../api/authApi";
 import type { AuthParams } from "../model/auth";
 import { AuthSchema } from "../schema/authSchema";
 
-export default function AuthForm() {
+interface AuthFormProps {
+	formType: "login" | "signup";
+}
+
+export default function AuthForm({ formType }: AuthFormProps) {
+	const isLogin = formType === "login";
+
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
 	} = useForm<AuthParams>({
-		resolver: zodResolver(AuthSchema),
+		resolver: isLogin ? undefined : zodResolver(AuthSchema),
 		mode: "onChange", // 입력값 변경 시 유효성 검사를 실행하도록 설정
 		defaultValues: {
 			email: "",
@@ -21,12 +29,17 @@ export default function AuthForm() {
 		},
 	});
 
-	const onSubmit = (data: AuthParams) => {
-		console.log(data);
-	};
+	const { queryFn } = authQuery.signup();
+
+	const { mutate } = useMutation({
+		mutationFn: (values: AuthParams) => queryFn(values),
+		onSuccess: (data) => {
+			localStorage.setItem("token", data.token);
+		},
+	});
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} noValidate className={cn("w-80")}>
+		<form onSubmit={handleSubmit(mutate)} noValidate className={cn("w-80")}>
 			<div className={cn("w-full h-24")}>
 				<label htmlFor="email" className={cn("font-bold")}>
 					Email
@@ -55,8 +68,16 @@ export default function AuthForm() {
 
 			{/* 제출 버튼은 유효성 검사 후 활성화 */}
 			<Button type="submit" disabled={!isValid}>
-				Login
+				{isLogin ? "Login" : "Signup"}
 			</Button>
+			{isLogin && (
+				<div className={cn("font-semibold my-2")}>
+					계정이 없다면?{" "}
+					<Link to="/signup" className="text-blue-700">
+						가입하기
+					</Link>
+				</div>
+			)}
 		</form>
 	);
 }

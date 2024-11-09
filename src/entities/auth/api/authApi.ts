@@ -16,12 +16,12 @@ export const createAuthApi = (apiClient: AxiosInstance) => ({
 const authApi = createAuthApi(axiosInstance);
 
 export const authQuery = {
-	login: (params: AuthParams) => ({
+	login: () => ({
 		queryKey: ["login"],
-		queryFn: () => authApi.login(params),
+		queryFn: authApi.login,
 	}),
-	signup: (params: AuthParams) => ({
+	signup: () => ({
 		queryKey: ["signup"],
-		queryFn: () => authApi.signup(params),
+		queryFn: (params: AuthParams) => authApi.signup(params),
 	}),
 };
