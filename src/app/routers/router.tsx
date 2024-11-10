@@ -1,17 +1,19 @@
+import { authLoader } from "@/entities/auth/loader/authLoader";
+import { Layout, LoginPage, SignupPage, TodoPage } from "@/pages";
 import { createBrowserRouter } from "react-router-dom";
-import Rayout from "../../pages/Rayout";
-import LoginPage from "../../pages/auth/LoginPage";
-import SignupPage from "../../pages/auth/SignupPage";
-import TodoPage from "../../pages/todo/TodoPage";
 
 export const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <Rayout />,
+		element: <Layout />,
+
 		children: [
 			{
 				path: "/",
 				element: <TodoPage />,
+				loader: () => {
+					return authLoader();
+				},
 			},
 			{
 				path: "/login",
