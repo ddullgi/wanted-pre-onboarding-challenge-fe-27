@@ -1,13 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Button, Input } from "@/shared/components";
 import { cn } from "@/shared/utils/cn";
-import { useMutation } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import { authQuery } from "../api/authApi";
-import type { AuthParams } from "../model/auth";
+import { authApi } from "../api/authApi";
 import { AuthSchema } from "../schema/authSchema";
+
+import type { AuthParams } from "../model/auth";
 
 interface AuthFormProps {
 	formType: "login" | "signup";
@@ -15,6 +16,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ formType }: AuthFormProps) {
 	const isLogin = formType === "login";
+	const navigate = useNavigate();
 
 	const {
 		register,
@@ -29,17 +31,26 @@ export default function AuthForm({ formType }: AuthFormProps) {
 		},
 	});
 
-	const { queryFn } = authQuery.signup();
-
 	const { mutate } = useMutation({
-		mutationFn: (values: AuthParams) => queryFn(values),
+		mutationFn: (params: AuthParams) =>
+			isLogin ? authApi.login(params) : authApi.signup(params),
 		onSuccess: (data) => {
-			localStorage.setItem("token", data.token);
+			if (isLogin) {
+				localStorage.setItem("authToken", data.token);
+				navigate("/");
+			} else {
+				alert("회원가입 완료");
+				navigate("/login");
+			}
 		},
 	});
 
+	const onSubmit = (data: AuthParams) => {
+		mutate(data);
+	};
+
 	return (
-		<form onSubmit={handleSubmit(mutate)} noValidate className={cn("w-80")}>
+		<form onSubmit={handleSubmit(onSubmit)} noValidate className={cn("w-80")}>
 			<div className={cn("w-full h-24")}>
 				<label htmlFor="email" className={cn("font-bold")}>
 					Email
@@ -50,7 +61,9 @@ export default function AuthForm({ formType }: AuthFormProps) {
 					{...register("email")}
 					placeholder="이메일을 입력하세요"
 				/>
-				{errors.email && <p>{errors.email.message}</p>}
+				{errors.email && (
+					<p className={cn("text-red-400")}>{errors.email.message}</p>
+				)}
 			</div>
 
 			<div className={cn("w-full h-24")}>
@@ -63,7 +76,9 @@ export default function AuthForm({ formType }: AuthFormProps) {
 					{...register("password")}
 					placeholder="비밀번호를 입력하세요"
 				/>
-				{errors.password && <p>{errors.password.message}</p>}
+				{errors.password && (
+					<p className={cn("text-red-400")}>{errors.password.message}</p>
+				)}
 			</div>
 
 			{/* 제출 버튼은 유효성 검사 후 활성화 */}
